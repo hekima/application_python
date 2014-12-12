@@ -37,7 +37,7 @@ def local_settings_base
 end
 
 def virtualenv
-  virtualenv_override.nil? "#{path}/shared/env" : virtualenv_override
+  virtualenv_override.nil? ? "#{path}/shared/env" : virtualenv_override
 end
 
 def database(*args, &block)
