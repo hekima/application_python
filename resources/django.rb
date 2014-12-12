@@ -30,13 +30,14 @@ attribute :settings_template, :kind_of => [String, NilClass], :default => nil
 attribute :local_settings_file, :kind_of => String, :default => 'local_settings.py'
 attribute :debug, :kind_of => [TrueClass, FalseClass], :default => false
 attribute :collectstatic, :kind_of => [TrueClass, FalseClass, String], :default => false
+attribute :virtualenv_override, :kind_of => String, :default => nil
 
 def local_settings_base
   local_settings_file.split(/[\\\/]/).last
 end
 
 def virtualenv
-  "#{path}/shared/env"
+  virtualenv_override.nil? "#{path}/shared/env" : virtualenv_override
 end
 
 def database(*args, &block)

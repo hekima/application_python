@@ -114,6 +114,7 @@ def install_packages
     owner new_resource.owner
     group new_resource.group
     action :create
+    not_if { new_resource.virtualenv_override.nil? }
   end
 
   new_resource.packages.each do |name, ver|
