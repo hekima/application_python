@@ -75,12 +75,10 @@ action :before_deploy do
     if new_resource.environment
       environment new_resource.environment
     end
+    gunicorn_command = new_resource.virtualenv.nil? ? "gunicorn" : "#{::File.join(new_resource.virtualenv, "bin", "gunicorn")}"
     if new_resource.app_module == :django
-      django_resource = new_resource.application.sub_resources.select{|res| res.type == :django}.first
-      raise "No Django deployment resource found" unless django_resource
-      base_command = "#{::File.join(django_resource.virtualenv, "bin", "python")} manage.py run_gunicorn"
+      base_command = "#{gunicorn_command} #{django_resource.module_name}.wsgi"
     else
-      gunicorn_command = new_resource.virtualenv.nil? ? "gunicorn" : "#{::File.join(new_resource.virtualenv, "bin", "gunicorn")}"
       base_command = "#{gunicorn_command} #{new_resource.app_module}"
     end
     command "#{base_command} -c #{new_resource.application.path}/shared/gunicorn_config.py"
